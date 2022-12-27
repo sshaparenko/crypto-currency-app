@@ -29,9 +29,6 @@ public class PairsService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    private static final class PairsMapper extends ObjectMapper {
-    }
-
     public Pairs  getCurrencyTextJson(String pair1, String pair2) {
         String url = "https://cex.io/api/ticker/{pair1}/{pair2}";
         String response = restTemplate.getForObject(url, String.class, pair1, pair2);
@@ -42,6 +39,7 @@ public class PairsService {
         } catch (JsonProcessingException e) {
             logger.info("Json processing exception" + e.getMessage());
         }
+        logger.info("Pairs object: " + pairs.toString());
         return pairs;
     }
 
