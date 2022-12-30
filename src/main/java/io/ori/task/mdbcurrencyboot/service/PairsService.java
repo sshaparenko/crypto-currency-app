@@ -16,16 +16,16 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
+import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 
 @Service
@@ -36,11 +36,14 @@ public class PairsService {
     private static final Logger logger = LoggerFactory.getLogger(PairsService.class);
     private final RestTemplate restTemplate;
     private final WebClient webClient;
+
+    private final HttpClient httpClient;
     private URL getPairsHttpUrl;
 
     public PairsService(RestTemplateBuilder restTemplateBuilder, WebClient.Builder webClientBuilder) {
         this.restTemplate = restTemplateBuilder.build();
         this.webClient = webClientBuilder.baseUrl("https://cex.io/api/").build();
+        this.httpClient = HttpClient.newBuilder().build();
     }
 
     public Pairs getPairsRestTemplate(String pair1, String pair2) {
@@ -75,7 +78,7 @@ public class PairsService {
     }
 
     public Pairs getPairsHttpClientAsync(String pair1, String pair2) {
-        var client = HttpClient.newHttpClient();
+//        var client = HttpClient.newHttpClient();
 
         var request = HttpRequest.newBuilder(
                 URI.create("https://cex.io/api/ticker/" + pair1 + "/" + pair2))
@@ -83,7 +86,7 @@ public class PairsService {
                 .GET()
                 .build();
 
-        CompletableFuture<HttpResponse<String>> response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
         try {
             String stringResponse = response.get().body();
@@ -94,9 +97,28 @@ public class PairsService {
             } catch (JsonProcessingException e) {
                 logger.info("Json processing exception" + e.getMessage());
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+        }
+        logger.info("Pairs object: " + pairs);
+        return pairs;
+    }
+
+    public Pairs getPairsHttpClientSync(String pair1, String pair2) {
+        try {
+            URI uri = new URI("https://cex.io/api/ticker/" + pair1 + "/" + pair2);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .timeout(Duration.of(10, SECONDS))
+                    .GET()
+                    .build();
+            try {
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                pairs = new ObjectMapper().readValue(response.toString(), Pairs.class);
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
         logger.info("Pairs object: " + pairs);

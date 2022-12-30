@@ -32,6 +32,11 @@ public class PairsController {
         return pairsService.getPairsHttpClientAsync(pair1, pair2);
     }
 
+    @GetMapping("/pairs/httpclient/sync/{pair1}/{pair2}")
+    public Pairs getPairsHttpClientSync(@PathVariable String pair1, @PathVariable String pair2) {
+        return pairsService.getPairsHttpClientSync(pair1, pair2);
+    }
+
 //    @GetMapping("/pairs/webclient/{pair1}/{pair2}")
 //    public Pairs getMonoPairsWebClient(@PathVariable String pair1, @PathVariable String pair2) {
 //        return pairsService.getMonoPairsWebClient(pair1, pair2);
