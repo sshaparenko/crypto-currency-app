@@ -34,77 +34,96 @@ public class PairsService {
     @Autowired
     private Pairs pairs;
     private static final Logger logger = LoggerFactory.getLogger(PairsService.class);
-    private final RestTemplate restTemplate;
-    private final WebClient webClient;
-
+//    private final RestTemplate restTemplate;
+//    private final WebClient webClient;
+    private String response;
     private final HttpClient httpClient;
     private URL getPairsHttpUrl;
 
     public PairsService(RestTemplateBuilder restTemplateBuilder, WebClient.Builder webClientBuilder) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.webClient = webClientBuilder.baseUrl("https://cex.io/api/").build();
+//        this.restTemplate = restTemplateBuilder.build();
+//        this.webClient = webClientBuilder.baseUrl("https://cex.io/api/").build();
         this.httpClient = HttpClient.newBuilder().build();
     }
 
-    public Pairs getPairsRestTemplate(String pair1, String pair2) {
-        String url = "https://cex.io/api/ticker/{pair1}/{pair2}";
-        String response = restTemplate.getForObject(url, String.class, pair1, pair2);
-        try {
-            pairs = new ObjectMapper().readValue(response, Pairs.class);
-        } catch (JsonMappingException e) {
-            logger.info("Json mapper exception: " + e.getMessage());
-        } catch (JsonProcessingException e) {
-            logger.info("Json processing exception" + e.getMessage());
-        }
-        logger.info("Pairs object: " + pairs.toString());
-        return pairs;
-    }
+//    public Pairs getPairsRestTemplate(String pair1, String pair2) {
+//        String url = "https://cex.io/api/ticker/{pair1}/{pair2}";
+//        String response = restTemplate.getForObject(url, String.class, pair1, pair2);
+//        try {
+//            pairs = new ObjectMapper().readValue(response, Pairs.class);
+//        } catch (JsonMappingException e) {
+//            logger.info("Json mapper exception: " + e.getMessage());
+//        } catch (JsonProcessingException e) {
+//            logger.info("Json processing exception" + e.getMessage());
+//        }
+//        logger.info("Pairs object: " + pairs.toString());
+//        return pairs;
+//    }
 
-    public Pairs getPairsHttpUrlConnection(String pair1, String pair2) {
-        try {
-            getPairsHttpUrl = new URL("https://cex.io/api/ticker/" + pair1 + "/" + pair2);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            HttpURLConnection connection = (HttpURLConnection) getPairsHttpUrl.openConnection();
-            InputStream inputStream = connection.getInputStream();
-            pairs = new ObjectMapper().readValue(inputStream, Pairs.class);
-        } catch (IOException e) {
-            logger.info(e.getMessage());
-        }
-        logger.info("Pairs object: " + pairs);
-        return pairs;
-    }
+//    public Pairs getPairsHttpUrlConnection(String pair1, String pair2) {
+//        try {
+//            getPairsHttpUrl = new URL("https://cex.io/api/ticker/" + pair1 + "/" + pair2);
+//        } catch (MalformedURLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        try {
+//            HttpURLConnection connection = (HttpURLConnection) getPairsHttpUrl.openConnection();
+//            InputStream inputStream = connection.getInputStream();
+//            pairs = new ObjectMapper().readValue(inputStream, Pairs.class);
+//        } catch (IOException e) {
+//            logger.info(e.getMessage());
+//        }
+//        logger.info("Pairs object: " + pairs);
+//        return pairs;
+//    }
 
-    public Pairs getPairsHttpClientAsync(String pair1, String pair2) {
-//        var client = HttpClient.newHttpClient();
+//    public Pairs getPairsHttpClientAsync(String pair1, String pair2) {
+//        var request = HttpRequest.newBuilder(
+//                URI.create("https://cex.io/api/ticker/" + pair1 + "/" + pair2))
+//                .header("accept", "application/json")
+//                .GET()
+//                .build();
+//
+//        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+//
+//        try {
+//            String stringResponse = response.get().body();
+//            try {
+//                pairs = new ObjectMapper().readValue(stringResponse, Pairs.class);
+//            } catch (JsonMappingException e) {
+//                logger.info("Json mapper exception: " + e.getMessage());
+//            } catch (JsonProcessingException e) {
+//                logger.info("Json processing exception" + e.getMessage());
+//            }
+//        } catch (InterruptedException | ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
+//        logger.info("Pairs object: " + pairs);
+//        return pairs;
+//    }
 
-        var request = HttpRequest.newBuilder(
-                URI.create("https://cex.io/api/ticker/" + pair1 + "/" + pair2))
-                .header("accept", "application/json")
-                .GET()
-                .build();
+//    public Pairs getPairsHttpClientSync(String pair1, String pair2) {
+//        try {
+//            URI uri = new URI("https://cex.io/api/ticker/" + pair1 + "/" + pair2);
+//            HttpRequest request = HttpRequest.newBuilder()
+//                    .uri(uri)
+//                    .timeout(Duration.of(10, SECONDS))
+//                    .GET()
+//                    .build();
+//            try {
+//                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+//                pairs = new ObjectMapper().readValue(response.toString(), Pairs.class);
+//            } catch (IOException | InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        } catch (URISyntaxException e) {
+//            throw new RuntimeException(e);
+//        }
+//        logger.info("Pairs object: " + pairs);
+//        return pairs;
+//    }
 
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-        try {
-            String stringResponse = response.get().body();
-            try {
-                pairs = new ObjectMapper().readValue(stringResponse, Pairs.class);
-            } catch (JsonMappingException e) {
-                logger.info("Json mapper exception: " + e.getMessage());
-            } catch (JsonProcessingException e) {
-                logger.info("Json processing exception" + e.getMessage());
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-        logger.info("Pairs object: " + pairs);
-        return pairs;
-    }
-
-    public Pairs getPairsHttpClientSync(String pair1, String pair2) {
+    public String getStringPairsHttpClientSync(String pair1, String pair2) {
         try {
             URI uri = new URI("https://cex.io/api/ticker/" + pair1 + "/" + pair2);
             HttpRequest request = HttpRequest.newBuilder()
@@ -114,15 +133,14 @@ public class PairsService {
                     .build();
             try {
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-                pairs = new ObjectMapper().readValue(response.toString(), Pairs.class);
+                this.response = response.body();
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        logger.info("Pairs object: " + pairs);
-        return pairs;
+        return response;
     }
 
     //trying to use WebClient to send HTTP request
