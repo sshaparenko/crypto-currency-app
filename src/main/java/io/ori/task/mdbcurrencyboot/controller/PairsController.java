@@ -22,18 +22,34 @@ public class PairsController {
 
     private static final Logger logger = LoggerFactory.getLogger(PairsService.class);
 
+
     //private static final Logger logger = LoggerFactory.getLogger(PairsController.class);
     @GetMapping("/addPairs/{pair1}/{pair2}")
     public ResponseEntity<String> addPairsMongo(@PathVariable String pair1, @PathVariable String pair2) {
-        mongoService.addPairs(pair1, pair2);
-        return ResponseEntity.ok("Data was recorded!");
+        if (cryptoCheck(pair1)){
+            mongoService.addPairs(pair1, pair2);
+            return ResponseEntity.ok("Data was recorded!");
+        } else {
+            return ResponseEntity.badRequest().body("Your crypto must by one of 3! BTC, ETH or XRP!");
+        }
     }
 
     @GetMapping("/getPairs/{pair}")
     public ResponseEntity<String> getPairsMongo(@PathVariable String pair) {
-        String res = mongoService.getPairs(pair);
-        System.out.println(res);
-        return ResponseEntity.ok(res);
+        if (cryptoCheck(pair)){
+            String res = mongoService.getPairs(pair);
+            return ResponseEntity.ok(res);
+        } else {
+            return ResponseEntity.badRequest().body("Your crypto must by one of 3! BTC, ETH or XRP!");
+        }
+    }
+
+    private boolean cryptoCheck(String currency) {
+        if (currency.equals("BTC") || currency.equals("ETH") || currency.equals("XRP")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 //    @GetMapping("pairs/httpurlconnection/{pair1}/{pair2}")

@@ -27,7 +27,7 @@ public class MongoService {
 
     public String getPairs(String currency) {
         collection = mongo.getCollection("currency", "pairs");
-        Document doc = Document.parse("{pair: \"ADA:USDT\"}");
+        Document doc = Document.parse("{pair: \"" + currency + ":USDT\"}");
 
         StringBuilder cursorString = new StringBuilder();
         MongoCursor<Document> cursor = collection.find(doc).iterator();
