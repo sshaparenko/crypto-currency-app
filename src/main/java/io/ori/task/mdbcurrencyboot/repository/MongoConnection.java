@@ -11,14 +11,13 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
-@Repository
-public class MongoStart {
+@Component
+public class MongoConnection {
     private final ConnectionString URI;
-
-    private static final Logger logger = LoggerFactory.getLogger(MongoStart.class);
-    public MongoStart() {
+    private static final Logger logger = LoggerFactory.getLogger(MongoConnection.class);
+    public MongoConnection() {
         String userName = System.getenv("MONGO_CLUSTER_USERNAME");
         String password = System.getenv("MONGO_CLUSTER_PASSWORD");
         this.URI = new ConnectionString("mongodb+srv://" + userName + ":" + password + "@cluster07228.lxtqr9w.mongodb.net/?retryWrites=true&w=majority");
