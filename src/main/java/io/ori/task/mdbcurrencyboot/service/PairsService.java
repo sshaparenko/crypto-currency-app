@@ -1,13 +1,8 @@
 package io.ori.task.mdbcurrencyboot.service;
 
-
-import io.ori.task.mdbcurrencyboot.service.entity.Pairs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.net.*;

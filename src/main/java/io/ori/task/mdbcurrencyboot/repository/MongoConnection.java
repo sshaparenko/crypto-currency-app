@@ -32,7 +32,8 @@ public class MongoConnection {
                         .build())
                 .build();
     }
-    private MongoClient getMongoClient(MongoClientSettings mongoClient) {
+    public MongoClient getMongoClient() {
+        MongoClientSettings mongoClient = this.setMongoSettings();
         logger.info("Start getMongoClient...");
         return MongoClients.create(mongoClient);
     }
@@ -43,8 +44,8 @@ public class MongoConnection {
 
     public MongoCollection<Document> getCollection(String dataBaseName, String collectionName) {
         logger.info("Start getConnection...");
-        MongoClientSettings settings = this.setMongoSettings();
-        MongoClient client = this.getMongoClient(settings);
+        //MongoClientSettings settings = this.setMongoSettings();
+        MongoClient client = this.getMongoClient();
         MongoDatabase database = this.getDatabase(client, dataBaseName);
         return database.getCollection(collectionName);
     }

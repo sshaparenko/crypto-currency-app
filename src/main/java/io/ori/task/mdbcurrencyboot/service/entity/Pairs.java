@@ -1,8 +1,8 @@
 package io.ori.task.mdbcurrencyboot.service.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import org.springframework.stereotype.Component;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;;
 
 import java.io.Serializable;
 
@@ -11,12 +11,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Component
+//@JsonIgnoreProperties(ignoreUnknown = true)
+//@Component
+@Document("pairs")
 public class Pairs implements Serializable {
-    private String Id;
+    @Id
+    private String id;
     private String low;
     private String high;
+    private String last;
     private String pair;
-//    private static final Logger logger = LoggerFactory.getLogger(Pairs.class);
 }

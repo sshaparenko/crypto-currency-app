@@ -1,61 +1,58 @@
 package io.ori.task.mdbcurrencyboot.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import io.ori.task.mdbcurrencyboot.repository.MongoConnection;
+import io.ori.task.mdbcurrencyboot.repository.PairsRepository;
+import io.ori.task.mdbcurrencyboot.service.entity.Pairs;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
-import java.util.Arrays;
+import java.io.IOException;
+import java.util.List;
 
 @Service
 public class MongoService {
     @Autowired
-    private MongoConnection mongo;
-    @Autowired
     private PairsService pairsService;
-
-    private MongoCollection<Document> collection;
+    @Autowired
+    private PairsRepository pairsRepository;
     private static final Logger logger = LoggerFactory.getLogger(MongoService.class);
 
-    public MongoService(){
+    public MongoService() {
     }
 
     public void addPairs(String pair1, String pair2) {
-        collection = mongo.getCollection("currency", "pairs");
-        collection.insertOne(Document.parse(pairsService.getStringPairsHttpClientSync(pair1, pair2)));
+        pairsRepository.insert(Document.parse(pairsService.getStringPairsHttpClientSync(pair1, pair2)));
     }
 
     public String getPairs(String currency) {
-        collection = mongo.getCollection("currency", "pairs");
-        Document doc = Document.parse("{pair: \"" + currency + ":USDT\"}");
-        StringBuilder cursorString = new StringBuilder();
-        MongoCursor<Document> cursor = collection.find(doc).iterator();
-        try {
-            while(cursor.hasNext()){
-                cursorString.append(cursor.next().toJson());
-            }
-        } finally {
-            cursor.close();
-        }
-        return cursorString.toString();
+        List<Pairs> list = pairsRepository.findAllByPair(currency + ":USDT");
+        return list.toString();
+    }
+    public String getMinPriceNoConnection(String name) {
+        List<Pairs> pairsList = pairsRepository.findMinPrice(name);
+        return pairsList.get(pairsList.size() - 1).getLow();
     }
 
-    public String getMinPrice(String name) {
-        //this.addPairs(name, "USDT");
-        collection = mongo.getCollection("currency", "pairs");
-        Document doc = Document.parse("{pair: \"" + name + ":USDT\"}");
-        Document docResult = collection.find(doc).first();
-        return docResult.getString("low");
+    public String getMaxPriceNoConnection(String name) {
+        List<Pairs> pairsList = pairsRepository.findMaxPrice(name);
+        return pairsList.get(pairsList.size() - 1).getHigh();
+    }
+
+    public String getListOfPrices(String name, Integer page, Integer size) throws IOException {
+        if (page == null && size == null){
+            page = 0;
+            size = 10;
+        } else if (page == null || size == null) {
+            throw new IOException();
+        }
+        final Pageable pageableRequest = PageRequest.of(page, size);
+        Page<Pairs> pagePairs = pairsRepository.findByPair(name, pageableRequest);
+        return pagePairs.get().toList().toString();
     }
 }
