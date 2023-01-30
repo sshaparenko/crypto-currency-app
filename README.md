@@ -10,7 +10,7 @@ This API is a test project where I learn, implement and test some features of Ja
 
 ## Configuration
 #### Configuring Data Base
-First of all, you should prepare your database to be used. As database I use MongoDB Atlas. So to make program work, you should have your own Atlas Cluster.
+First of all, you should prepare your database to be used. As database, I use MongoDB Atlas. So to make program work, you should have your own Atlas Cluster.
 <br>Here is a guide on [how to start with Atlas](https://www.mongodb.com/docs/atlas/getting-started/).
 
 As soon as you get you cluster, you should create a collection in it called `pairs`, where all the information about currency pairs will be stored.
