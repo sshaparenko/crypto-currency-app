@@ -26,21 +26,21 @@ public class MongoService {
     public MongoService() {
     }
 
-    public void addPairs(String pair1, String pair2) {
-        pairsRepository.insert(Document.parse(pairsService.getStringPairsHttpClientSync(pair1, pair2)));
+    public Document addPairs(String pair1, String pair2) {
+        return pairsRepository.insert(Document.parse(pairsService.getStringPairsHttpClientSync(pair1, pair2)));
     }
 
     public String getPairs(String currency) {
         List<Pairs> list = pairsRepository.findAllByPair(currency + ":USDT");
         return list.toString();
     }
-    public String getMinPriceNoConnection(String name) {
-        List<Pairs> pairsList = pairsRepository.findMinPrice(name);
+    public String getMinPrice(String name) {
+        List<Pairs> pairsList = pairsRepository.findMinPrice(name + ":USDT");
         return pairsList.get(pairsList.size() - 1).getLow();
     }
 
-    public String getMaxPriceNoConnection(String name) {
-        List<Pairs> pairsList = pairsRepository.findMaxPrice(name);
+    public String getMaxPrice(String name) {
+        List<Pairs> pairsList = pairsRepository.findMaxPrice(name + ":USDT");
         return pairsList.get(pairsList.size() - 1).getHigh();
     }
 
@@ -52,7 +52,7 @@ public class MongoService {
             throw new IOException();
         }
         final Pageable pageableRequest = PageRequest.of(page, size);
-        Page<Pairs> pagePairs = pairsRepository.findByPair(name, pageableRequest);
+        Page<Pairs> pagePairs = pairsRepository.findByPair(name + ":USDT", pageableRequest);
         return pagePairs.get().toList().toString();
     }
 }

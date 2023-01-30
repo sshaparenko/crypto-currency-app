@@ -17,6 +17,6 @@ public interface PairsRepository extends MongoRepository<Pairs, String> {
     @Query(value = "{'pair':  '?0'}", fields = "{'_id': 1, 'high': 1}")
     List<Pairs> findMaxPrice(String name);
     Page<Pairs> findByPair(String name, Pageable pageable);
-    void insert(Document stringPairsHttpClientSync);
+    Document insert(Document stringPairsHttpClientSync);
     List<Pairs> findAllByPair(String name);
 }
