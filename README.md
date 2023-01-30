@@ -1,4 +1,22 @@
-# crypto-currency-app
+# Cryptocurrency API
+This API is a test project where I learn, implement and test some features of Java, Spring Boot and so on.
+<br>For now, the technology stack is:
+- Java 18
+- Spring Boot v3.0.1
+- Spring Data MongoDB v4.0.0
+- Log4j v2.19.0
+- Junit v5.9.1
+- Mockito
+
+## Configuration
+#### Configuring Data Base
+First of all, you should prepare your database to be used. As database I use MongoDB Atlas. So to make program work, you should have your own Atlas Cluster.
+<br>Here is a guide on [how to start with Atlas](https://www.mongodb.com/docs/atlas/getting-started/).
+
+As soon as you get you cluster, you should create a collection in it called `pairs`, where all the information about currency pairs will be stored.
+<br> From now our Atlas MongoDB is ready to use!
+#### Application properties
+
 
 Available currencies:
 - BTC
