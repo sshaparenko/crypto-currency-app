@@ -17,9 +17,7 @@ First of all, you should prepare your database to be used. As database, I use Mo
 As soon as you get you cluster, you should create a collection in it called `pairs`, where all the information about currency pairs will be stored.
 <br> From now our Atlas MongoDB is ready to use!
 #### Application properties
-Now we should configure the application properties file. Here you should set the next properties:
-![Screenshot from 2023-01-31 20-07-36.png](img/Screenshot%20from%202023-01-31%2020-07-36.png)
-<br>The `uri` property you can get from your Atlas.
+Now we should configure the application properties file. Here you should set the `spring.data.mongodb.uri` property ehich you can get from your Atlas.
 <br>From now all the properties are set and the project can be run!
 ## Working with API 
 <br>There are 3 available currencies for now:
