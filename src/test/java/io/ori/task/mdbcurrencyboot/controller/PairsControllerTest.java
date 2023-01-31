@@ -1,29 +1,12 @@
 package io.ori.task.mdbcurrencyboot.controller;
 
-import io.ori.task.mdbcurrencyboot.MdbCurrencyBootApplication;
-import io.ori.task.mdbcurrencyboot.repository.PairsRepository;
+
 import io.ori.task.mdbcurrencyboot.service.MongoService;
-import io.ori.task.mdbcurrencyboot.service.PairsService;
-import org.bson.Document;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;

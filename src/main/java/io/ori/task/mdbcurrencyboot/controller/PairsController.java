@@ -25,7 +25,7 @@ public class PairsController {
         if (pair1 == null || pair2 == null) {
             return ResponseEntity.badRequest().body("Some of your uri variables are null!");
         }
-        if (cryptoCheck(pair1) && pair2 == "USDT") {
+        if (cryptoCheck(pair1) && pair2.equals("USDT")) {
             mongoService.addPairs(pair1, pair2);
             return ResponseEntity.ok("Data was recorded!");
         } else {
@@ -93,10 +93,6 @@ public class PairsController {
     }
 
     private boolean cryptoCheck(String currency) {
-        if (currency.equals("BTC") || currency.equals("ETH") || currency.equals("XRP")) {
-            return true;
-        } else {
-            return false;
-        }
+        return currency.equals("BTC") || currency.equals("ETH") || currency.equals("XRP");
     }
 }
