@@ -5,6 +5,7 @@ import io.ori.task.mdbcurrencyboot.service.PairsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +19,13 @@ public class PairsController {
     @Autowired
     private MongoService mongoService;
     private final String NOT_ONE_OF_TYPE_PAIR_MESSAGE = "Your crypto must by one of 3! BTC:USDT, ETH:USDT or XRP:USDT!";
+    private final String NULL_PARAMETER_RESPONSE = "Some of your uri variables are null!";
     private static final Logger logger = LoggerFactory.getLogger(PairsService.class);
 
     @PostMapping("/pairs/{pair1}/{pair2}")
     public ResponseEntity<String> addPairsMongo(@PathVariable String pair1, @PathVariable String pair2) {
         if (pair1 == null || pair2 == null) {
-            return ResponseEntity.badRequest().body("Some of your uri variables are null!");
+            return ResponseEntity.badRequest().body(NULL_PARAMETER_RESPONSE);
         }
         if (cryptoCheck(pair1) && pair2.equals("USDT")) {
             mongoService.addPairs(pair1, pair2);
@@ -33,8 +35,11 @@ public class PairsController {
         }
     }
 
-    @GetMapping("/pairs/{pair}")
+    @GetMapping(value = "/pairs/{pair}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getPairsMongo(@PathVariable String pair) {
+        if (pair == null) {
+            return ResponseEntity.badRequest().body(NULL_PARAMETER_RESPONSE);
+        }
         if (cryptoCheck(pair)) {
             String result = mongoService.getPairs(pair);
             return ResponseEntity.ok(result);
@@ -45,6 +50,9 @@ public class PairsController {
 
     @GetMapping("/cryptocurrencies/minprice")
     public ResponseEntity<String> getMinPrice(@RequestParam String name) {
+        if (name == null) {
+            return ResponseEntity.badRequest().body(NULL_PARAMETER_RESPONSE);
+        }
         if (cryptoCheck(name)) {
             String result = mongoService.getMinPrice(name);
             if (result != null) {
@@ -59,6 +67,9 @@ public class PairsController {
 
     @GetMapping("/cryptocurrencies/maxprice")
     public ResponseEntity<String> getMaxPrice(@RequestParam String name) {
+        if (name == null) {
+            return ResponseEntity.badRequest().body(NULL_PARAMETER_RESPONSE);
+        }
         if (cryptoCheck(name)) {
             String result = mongoService.getMaxPrice(name);
             if (result != null) {
@@ -74,6 +85,9 @@ public class PairsController {
     public ResponseEntity<String> geListOfPrices(@RequestParam String name,
                                                  @RequestParam(required = false) Integer page,
                                                  @RequestParam(required = false) Integer size) {
+        if (name == null) {
+            return ResponseEntity.badRequest().body(NULL_PARAMETER_RESPONSE);
+        }
         if (cryptoCheck(name)) {
             try {
                 String result = mongoService.getListOfPrices(name, page, size);

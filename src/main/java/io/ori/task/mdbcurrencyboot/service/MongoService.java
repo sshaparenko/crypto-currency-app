@@ -3,6 +3,7 @@ package io.ori.task.mdbcurrencyboot.service;
 
 import io.ori.task.mdbcurrencyboot.repository.PairsRepository;
 import io.ori.task.mdbcurrencyboot.service.entity.Pairs;
+import lombok.NoArgsConstructor;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
+@NoArgsConstructor
 public class MongoService {
     @Autowired
     private PairsService pairsService;
@@ -23,16 +27,15 @@ public class MongoService {
     private PairsRepository pairsRepository;
     private static final Logger logger = LoggerFactory.getLogger(MongoService.class);
 
-    public MongoService() {
-    }
-
     public Document addPairs(String pair1, String pair2) {
+        //check null
         return pairsRepository.insert(Document.parse(pairsService.getStringPairsHttpClientSync(pair1, pair2)));
     }
 
     public String getPairs(String currency) {
         List<Pairs> list = pairsRepository.findAllByPair(currency + ":USDT");
-        return list.toString();
+        Optional<String> result = pairsService.mapPairsToJson(list);
+        return result.orElse("There is no data for your crypto :(");
     }
     public String getMinPrice(String name) {
         List<Pairs> pairsList = pairsRepository.findMinPrice(name + ":USDT");
