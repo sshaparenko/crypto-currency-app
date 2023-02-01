@@ -1,5 +1,8 @@
 package io.ori.task.mdbcurrencyboot.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.ori.task.mdbcurrencyboot.service.entity.Pairs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.List;
+import java.util.Optional;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -42,5 +47,18 @@ public class PairsService {
             throw new RuntimeException(e);
         }
         return response;
+    }
+
+    public Optional<String> mapPairsToJson(List<Pairs> pairs) {
+        ObjectMapper mapper = new ObjectMapper();
+        Optional<String> optional = Optional.empty();
+        try {
+            String json = mapper.writeValueAsString(pairs);
+            optional = Optional.ofNullable(json);
+            return optional;
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
+        return optional;
     }
 }
